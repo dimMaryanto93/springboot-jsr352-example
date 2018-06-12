@@ -2,6 +2,19 @@
 
 Batch proccession based on JSR 352 dengan Spring Batch.
 
+## Arsitektur spring-batch: 
+
+![arsitektur jsr 352](imgs/arsitketur-jsr352.png)
+
+## Flow spring-batch
+
+1. Job Launcher
+2. Job -> Job Instance -> Job execution
+3. Step 
+	- Item Reader
+	- Item Proccessor
+	- Item Writer
+
 ## Setup / System Requirement
 
 - PostgreSQL
