@@ -50,7 +50,6 @@ public class BatchConfiguration {
         DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
         tokenizer.setNames(new String[]{"id", "name", "birtDate", "address"});
 
-
         DefaultLineMapper lineMapper = new DefaultLineMapper();
         lineMapper.setLineTokenizer(tokenizer);
         lineMapper.setFieldSetMapper(fieldSetMapper);
@@ -73,7 +72,7 @@ public class BatchConfiguration {
     @Bean
     public Step step1(JdbcBatchItemWriter<DataPenduduk> writer, FlatFileItemReader<FileDataPenduduk> reader) {
         return stepBuilderFactory.get("step1")
-                .<FileDataPenduduk, com.maryato.dimas.example.entity.DataPenduduk>chunk(10)
+                .<FileDataPenduduk, DataPenduduk>chunk(10)
                 .reader(reader)
                 .processor(proccessor)
                 .writer(writer)
