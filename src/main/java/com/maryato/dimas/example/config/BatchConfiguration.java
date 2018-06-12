@@ -70,12 +70,12 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Step step1(JdbcBatchItemWriter<DataPenduduk> writer, FlatFileItemReader<FileDataPenduduk> reader) {
+    public Step step1(JdbcBatchItemWriter<DataPenduduk> jdbcWriter, FlatFileItemReader<FileDataPenduduk> fileReader) {
         return stepBuilderFactory.get("step1")
                 .<FileDataPenduduk, DataPenduduk>chunk(10)
-                .reader(reader)
+                .reader(fileReader)
                 .processor(proccessor)
-                .writer(writer)
+                .writer(jdbcWriter)
                 .build();
     }
 
