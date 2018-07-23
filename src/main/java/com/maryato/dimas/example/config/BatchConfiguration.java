@@ -9,10 +9,18 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.repository.support.JobRepositoryFactoryBean;
 import org.springframework.batch.item.excel.poi.PoiItemReader;
+import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+
+import javax.sql.DataSource;
 
 @Configuration
 @EnableBatchProcessing
@@ -25,11 +33,28 @@ public class BatchConfiguration {
     public StepBuilderFactory stepBuilderFactory;
 
     @Bean
-    public Step excelToJdbcAndExcelFileStep(
+    public JobRepository jobRepository(
+            @Qualifier("dataSource") DataSource dataSource,
+            PlatformTransactionManager transactionManager) throws Exception {
+        JobRepositoryFactoryBean repository = new JobRepositoryFactoryBean();
+//        repository.setDatabaseType();
+        repository.setDataSource(dataSource);
+        repository.setTransactionManager(transactionManager);
+        return repository.getObject();
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(@Qualifier("dataSource") DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
+
+
+    @Bean(name = "stepExcelToExcel")
+    public Step excelToExcelFileStep(
             PoiItemReader<Penduduk> reader,
             TransformProcessor processor,
             DataPendudukExcelItemWriter writer) {
-        return stepBuilderFactory.get("excelToJdbcAndExcelFileStep")
+        return stepBuilderFactory.get("excelToExcelFileStep")
                 .<Penduduk, Penduduk>chunk(10)
                 .reader(reader)
                 .processor(processor)
@@ -37,11 +62,37 @@ public class BatchConfiguration {
                 .build();
     }
 
-    @Bean
-    public Job excelToJdbcAndExcelFileJob(Step excelToJdbcAndExcelFile) {
-        return jobBuilderFactory.get("importUserJob")
+    @Bean(name = "stepCsvToExcel")
+    public Step csvToExcelStep(
+            @Qualifier("dataCsvItemReader") FlatFileItemReader<Penduduk> reader,
+            TransformProcessor processor,
+            DataPendudukExcelItemWriter writer) {
+        return stepBuilderFactory.get("csvToExcelStep")
+                .<Penduduk, Penduduk>chunk(10)
+                .reader(reader)
+                .processor(processor)
+                .writer(writer)
+                .build();
+    }
+
+    @Bean(name = "jobExcelToExcel")
+    public Job excelToExcelJob(
+            @Qualifier("stepExcelToExcel") Step job) {
+        return jobBuilderFactory.get("excelToExcelJob")
                 .incrementer(new RunIdIncrementer())
-                .flow(excelToJdbcAndExcelFile)
+                .preventRestart()
+                .flow(job)
+                .end()
+                .build();
+    }
+
+    @Bean(name = "jobCsvToExcel")
+    public Job csvToExcelJob(
+            @Qualifier("stepCsvToExcel") Step job) {
+        return jobBuilderFactory.get("csvToExcelJob")
+                .incrementer(new RunIdIncrementer())
+                .preventRestart()
+                .flow(job)
                 .end()
                 .build();
     }

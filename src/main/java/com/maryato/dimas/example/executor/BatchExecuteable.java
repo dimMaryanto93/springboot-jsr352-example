@@ -15,14 +15,23 @@ public class BatchExecuteable implements CommandLineRunner {
     private JobLauncher jobLauncher;
 
     @Autowired
-    @Qualifier("excelToJdbcAndExcelFileJob")
+    @Qualifier("jobExcelToExcel")
     private Job excelToExcelJob;
+
+    @Autowired
+    @Qualifier("jobCsvToExcel")
+    private Job csvToExcelJob;
 
     @Override
     public void run(String... strings) throws Exception {
-        JobParametersBuilder params = new JobParametersBuilder();
-        params.addString("fileName", "/data/penduduk.xlsx");
-        params.addLong("time", System.currentTimeMillis());
-        jobLauncher.run(excelToExcelJob, params.toJobParameters());
+        JobParametersBuilder excelToExcelJobParams = new JobParametersBuilder();
+        excelToExcelJobParams.addString("fileName", "/data/penduduk.xlsx");
+        excelToExcelJobParams.addLong("time", System.currentTimeMillis());
+        jobLauncher.run(excelToExcelJob, excelToExcelJobParams.toJobParameters());
+
+        JobParametersBuilder csvToExcelJobParams = new JobParametersBuilder();
+        csvToExcelJobParams.addLong("time", System.currentTimeMillis());
+        csvToExcelJobParams.addString("fileName", "/data/penduduk.csv");
+        jobLauncher.run(csvToExcelJob, csvToExcelJobParams.toJobParameters());
     }
 }

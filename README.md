@@ -32,9 +32,3 @@ Batch proccession based on JSR 352 dengan Spring Batch.
 ```docker
 docker-compose up -d
 ```
-
-## initial database / tables
-
-```bash
-mvn clean -Dflyway.user=postgres -Dflyway.password=admin -Dflyway.url=jdbc:postgresql://localhost:5432/postgres flyway:clean flyway:migrate
-```
