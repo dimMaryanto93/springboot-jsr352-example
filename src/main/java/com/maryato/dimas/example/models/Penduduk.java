@@ -1,17 +1,15 @@
-package com.maryato.dimas.example.entity;
+package com.maryato.dimas.example.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DataPenduduk {
+public class Penduduk {
 
     private String nik;
-    private String namaIdentitas;
-    private Date tanggalLahir;
+    private String namaLengkap;
+    private String tanggalLahir;
 }
