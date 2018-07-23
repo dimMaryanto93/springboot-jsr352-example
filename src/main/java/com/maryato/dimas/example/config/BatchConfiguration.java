@@ -1,5 +1,6 @@
 package com.maryato.dimas.example.config;
 
+import com.maryato.dimas.example.config.items.DataPendudukExcelItemWriter;
 import com.maryato.dimas.example.config.items.TransformProcessor;
 import com.maryato.dimas.example.models.Penduduk;
 import org.springframework.batch.core.Job;
@@ -26,12 +27,13 @@ public class BatchConfiguration {
     @Bean
     public Step excelToJdbcAndExcelFileStep(
             PoiItemReader<Penduduk> reader,
-            TransformProcessor processor) {
+            TransformProcessor processor,
+            DataPendudukExcelItemWriter writer) {
         return stepBuilderFactory.get("excelToJdbcAndExcelFileStep")
                 .<Penduduk, Penduduk>chunk(10)
                 .reader(reader)
                 .processor(processor)
-//                .writer(jdbcWriter)
+                .writer(writer)
                 .build();
     }
 
