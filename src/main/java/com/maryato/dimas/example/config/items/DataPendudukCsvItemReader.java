@@ -17,7 +17,7 @@ public class DataPendudukCsvItemReader {
     @Bean(name = "dataCsvItemReader")
     @StepScope
     public FlatFileItemReader<Penduduk> fileReader(
-            @Value("#{jobParameters['fileName']}") String fileName) throws Exception {
+            @Value("#{jobParameters['sourceCsvResource']}") String fileName) throws Exception {
         FlatFileItemReader<Penduduk> fileItemReader = new FlatFileItemReader<>();
         fileItemReader.setName("dataPenduduk");
         fileItemReader.setResource(new ClassPathResource(fileName));
