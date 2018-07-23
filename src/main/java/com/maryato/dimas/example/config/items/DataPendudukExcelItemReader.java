@@ -1,10 +1,12 @@
 package com.maryato.dimas.example.config.items;
 
 import com.maryato.dimas.example.models.Penduduk;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.excel.RowMapper;
 import org.springframework.batch.item.excel.poi.PoiItemReader;
 import org.springframework.batch.item.excel.support.rowset.DefaultRowSetFactory;
 import org.springframework.batch.item.excel.support.rowset.RowSet;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
@@ -13,9 +15,11 @@ import org.springframework.stereotype.Component;
 public class DataPendudukExcelItemReader {
 
     @Bean(name = "dataExcelItemReader")
-    public PoiItemReader<Penduduk> itemReader() throws Exception {
+    @StepScope
+    public PoiItemReader<Penduduk> itemReader(
+            @Value("#{jobParameters['fileName']}") String fileName) throws Exception {
         PoiItemReader reader = new PoiItemReader();
-        reader.setResource(new ClassPathResource("/data/penduduk.xlsx"));
+        reader.setResource(new ClassPathResource(fileName));
         reader.setLinesToSkip(1);
         reader.setRowMapper(new PendudukExcelRowMapper());
         reader.setRowSetFactory(new DefaultRowSetFactory());
