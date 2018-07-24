@@ -17,8 +17,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-@Component
 @StepScope
+@Component
 public class DataPendudukExcelItemWriter implements ItemWriter<Penduduk> {
 
     private static final String FILE_NAME = new StringBuilder(System.getProperty("user.home"))
@@ -30,6 +30,7 @@ public class DataPendudukExcelItemWriter implements ItemWriter<Penduduk> {
     private Workbook workbook;
     private CellStyle dataCellStyle;
     private int currRow = 0;
+    private Sheet sheet;
 
     private void addHeaders(Sheet sheet) {
 
@@ -100,7 +101,7 @@ public class DataPendudukExcelItemWriter implements ItemWriter<Penduduk> {
         outputFilename = FILE_NAME + "_" + dateTime + ".xlsx";
 
         workbook = new SXSSFWorkbook(100);
-        Sheet sheet = workbook.createSheet("Testing");
+        this.sheet = workbook.createSheet("Testing");
         sheet.createFreezePane(0, 3, 0, 3);
         sheet.setDefaultColumnWidth(20);
 
@@ -124,8 +125,7 @@ public class DataPendudukExcelItemWriter implements ItemWriter<Penduduk> {
     @Override
     public void write(List<? extends Penduduk> items) throws Exception {
 
-        Sheet sheet = workbook.getSheetAt(0);
-
+        Sheet sheet = workbook.getSheetAt(0) != null ? workbook.getSheetAt(0) : workbook.createSheet();
         for (Penduduk data : items) {
             currRow++;
             Row row = sheet.createRow(currRow);
