@@ -32,3 +32,11 @@ Batch proccession based on JSR 352 dengan Spring Batch.
 ```docker
 docker-compose up -d
 ```
+
+## Flow step single processing
+
+![Sample excel to excel job](imgs/batch-step-excel-to-excel.png)
+
+## Flow step multiple processing item writer
+
+![Sample csv to Excel and JDBC](imgs/batch-step-csv-to-excelandjdbc.png)
