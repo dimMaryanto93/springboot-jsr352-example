@@ -100,16 +100,24 @@ public class BatchConfiguration {
                 .build();
     }
 
-    @Bean
-    public CompositeItemWriter<Penduduk> groupStepJdbcAndExcel(
-            DataPendudukExcelItemWriter excel,
-            @Qualifier("dataPendudukJdbcWriter") JdbcBatchItemWriter<Penduduk> jdbc) throws Exception {
-        CompositeItemWriter compose = new CompositeItemWriter();
-        compose.setDelegates(Arrays.asList(jdbc, excel));
-        compose.setIgnoreItemStream(false);
-        compose.afterPropertiesSet();
-        return compose;
-    }
+//    /**
+//     * use this if no need @AfterStep or @BeforeStep because not working
+//     *
+//     * @param excel
+//     * @param jdbc
+//     * @return
+//     * @throws Exception
+//     */
+//    @Bean
+//    public CompositeItemWriter<Penduduk> groupStepJdbcAndExcel(
+//            DataPendudukExcelItemWriter excel,
+//            @Qualifier("dataPendudukJdbcWriter") JdbcBatchItemWriter<Penduduk> jdbc) throws Exception {
+//        CompositeItemWriter compose = new CompositeItemWriter();
+//        compose.setDelegates(Arrays.asList(jdbc, excel));
+//        compose.setIgnoreItemStream(false);
+//        compose.afterPropertiesSet();
+//        return compose;
+//    }
 
     @Bean(name = "csvToExcelAndJdbcStep")
     public Step csvToExcelAndJdbcStep(
