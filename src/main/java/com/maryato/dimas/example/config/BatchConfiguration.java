@@ -16,6 +16,8 @@ import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.excel.poi.PoiItemReader;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.jms.JmsItemReader;
+import org.springframework.batch.item.jms.JmsItemWriter;
+import org.springframework.batch.item.support.CompositeItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +26,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
+import java.util.Arrays;
 
 @Configuration
 @EnableBatchProcessing
@@ -127,12 +130,12 @@ public class BatchConfiguration {
     public Step jmsToJdbcStep(
             JmsItemReader<Penduduk> reader,
             TransformProcessor processor,
-            JdbcBatchItemWriter<Penduduk> writer) {
+            @Qualifier("groupJmsWriter") CompositeItemWriter<Penduduk> groupWriter) {
         return stepBuilderFactory.get("jmsToJdbcStep")
                 .<Penduduk, Penduduk>chunk(1)
                 .reader(reader)
                 .processor(processor)
-                .writer(writer)
+                .writer(groupWriter)
                 .build();
     }
 
@@ -145,6 +148,17 @@ public class BatchConfiguration {
                 .flow(job)
                 .end()
                 .build();
+    }
+
+    @Bean
+    public CompositeItemWriter<Penduduk> groupJmsWriter(
+            JmsItemWriter<Penduduk> jmsWriter,
+            JdbcBatchItemWriter<Penduduk> jdbcWriter) throws Exception {
+        CompositeItemWriter<Penduduk> groupWriters = new CompositeItemWriter<>();
+        groupWriters.setIgnoreItemStream(true);
+        groupWriters.setDelegates(Arrays.asList(jmsWriter, jdbcWriter));
+        groupWriters.afterPropertiesSet();
+        return groupWriters;
     }
 
 }

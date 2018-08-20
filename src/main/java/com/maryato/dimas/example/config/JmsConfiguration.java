@@ -1,6 +1,7 @@
 package com.maryato.dimas.example.config;
 
 import org.apache.activemq.command.ActiveMQQueue;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,15 +47,34 @@ public class JmsConfiguration {
     }
 
     @Bean
+    public ActiveMQQueue queuePendudukWriter() {
+        return new ActiveMQQueue("/penduduk/writer");
+    }
+
+    @Bean
     public JmsTemplate jmsReaderPenduduk(
             MessageConverter converter,
             ConnectionFactory connection,
-            ActiveMQQueue queue) throws JMSException {
+            @Qualifier("queuePendudukReader") ActiveMQQueue queue) throws JMSException {
         JmsTemplate template = new JmsTemplate(connection);
         template.setMessageConverter(converter);
         template.setReceiveTimeout(Long.MAX_VALUE);
         template.setDeliveryPersistent(true);
         template.setDefaultDestinationName(queue.getQueueName());
+        template.setSessionTransacted(true);
+        return template;
+    }
+
+    @Bean
+    public JmsTemplate jmsWriterPenduduk(
+            MessageConverter converter,
+            ConnectionFactory connection,
+            @Qualifier("queuePendudukWriter") ActiveMQQueue queue) throws JMSException {
+        JmsTemplate template = new JmsTemplate(connection);
+        template.setMessageConverter(converter);
+        template.setReceiveTimeout(Long.MAX_VALUE);
+        template.setDefaultDestinationName(queue.getQueueName());
+        template.setDeliveryPersistent(true);
         template.setSessionTransacted(true);
         return template;
     }
