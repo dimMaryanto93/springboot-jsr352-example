@@ -18,7 +18,7 @@ import java.util.List;
 
 @Component
 @StepScope
-public class DataPendudukExcelItemWriterListener implements ItemStreamWriter<Penduduk> {
+public class DataPendudukExcelAndJdbcItemWriter implements ItemStreamWriter<Penduduk> {
 
     @Autowired
     private DataPendudukExcelItemWriter excelItemWriter;
