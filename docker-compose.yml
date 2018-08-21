@@ -8,5 +8,13 @@ services:
       - pg_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=admin
+  mq_massage:
+    image: rmohr/activemq
+    ports:
+      - 61616:61616
+      - 8161:8161
+    volumes:
+      - mq_data:/opt/activemq/data
 volumes:
   pg_data:
+  mq_data:
