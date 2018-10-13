@@ -210,7 +210,7 @@ public abstract class AbstractExcelItemReader<T> extends AbstractItemCountingIte
     }
 
     /**
-     * @param skippedRowsCallback will be called for each one of the initial skipped lines before any items are read.
+     * @param skippedRowsCallback will be called for each one of the initial skipped lines before any chunk are read.
      */
     public void setSkippedRowsCallback(final RowCallbackHandler skippedRowsCallback) {
         this.skippedRowsCallback = skippedRowsCallback;
