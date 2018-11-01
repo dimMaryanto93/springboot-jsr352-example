@@ -16,15 +16,12 @@ public class BatchChunkExecution implements CommandLineRunner {
     @Autowired
     @Qualifier("jobExcelToExcel")
     private Job excelToExcelJob;
-
     @Autowired
     @Qualifier("jobCsvToExcel")
     private Job csvToExcelJob;
-
     @Autowired
     @Qualifier("csvToExcelAndJdbcJob")
     private Job csvToExcelAndJdbcJob;
-
     @Autowired
     @Qualifier("jmsToJdbcJob")
     private Job jmsToJdbcJob;

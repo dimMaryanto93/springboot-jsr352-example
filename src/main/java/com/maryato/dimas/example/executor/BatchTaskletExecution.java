@@ -27,18 +27,18 @@ public class BatchTaskletExecution implements CommandLineRunner {
 
     @Override
     public void run(String... strings) throws Exception {
-        this.params = new JobParametersBuilder();
-        params.addLong("time", System.currentTimeMillis());
-        params.addString("sourceCsvResource", "/data/penduduk.csv");
-        List<String> values = Arrays.asList("1234", "1235", "1236");
-        JobExecution run = jobLauncher.run(taskletJob, params.toJobParameters());
-
-        while (true) {
-            if (!run.getExitStatus().getExitCode().equals("UNKNOWN")) {
-                break;
-            }
-        }
-
-        log.info("job finished!");
+//        this.params = new JobParametersBuilder();
+//        params.addLong("time", System.currentTimeMillis());
+//        params.addString("sourceCsvResource", "/data/penduduk.csv");
+//        List<String> values = Arrays.asList("1234", "1235", "1236");
+//        JobExecution run = jobLauncher.run(taskletJob, params.toJobParameters());
+//
+//        while (true) {
+//            if (!run.getExitStatus().getExitCode().equals("UNKNOWN")) {
+//                break;
+//            }
+//        }
+//
+//        log.info("job finished!");
     }
 }

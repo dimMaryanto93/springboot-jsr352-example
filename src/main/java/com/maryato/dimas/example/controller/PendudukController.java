@@ -3,6 +3,10 @@ package com.maryato.dimas.example.controller;
 import com.maryato.dimas.example.models.Penduduk;
 import com.maryato.dimas.example.service.StorageService;
 import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.launch.JobExecutionNotRunningException;
+import org.springframework.batch.core.launch.JobOperator;
+import org.springframework.batch.core.launch.NoSuchJobException;
+import org.springframework.batch.core.launch.NoSuchJobExecutionException;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
@@ -18,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.Set;
 
 import static org.springframework.http.ResponseEntity.*;
 
@@ -33,6 +38,8 @@ public class PendudukController {
     private JmsTemplate writerPendudukTemplate;
     @Autowired
     private StorageService fileService;
+    @Autowired
+    private JobOperator jobOperator;
 
     @PostMapping("/send")
     public ResponseEntity<?> messageSend(@RequestBody Penduduk penduduk) {
@@ -74,5 +81,20 @@ public class PendudukController {
 
     }
 
+    @GetMapping("/jobs")
+    public ResponseEntity<?> findJobs() {
+        return ok(jobOperator.getJobNames());
+    }
+
+    @PostMapping("/job/stop")
+    public ResponseEntity<?> stopBatch() throws NoSuchJobException, NoSuchJobExecutionException, JobExecutionNotRunningException {
+        Set<Long> executions = jobOperator.getRunningExecutions("excelToExcelJob");
+        if (!executions.isEmpty()) {
+            jobOperator.stop(executions.iterator().next());
+            return ok().build();
+        }
+
+        return noContent().build();
+    }
 
 }

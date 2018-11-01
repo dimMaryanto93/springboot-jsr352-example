@@ -1,6 +1,7 @@
 package com.maryato.dimas.example.batch.chunk;
 
 import com.maryato.dimas.example.models.Penduduk;
+import org.apache.commons.io.FileUtils;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.excel.RowMapper;
 import org.springframework.batch.item.excel.poi.PoiItemReader;
@@ -8,8 +9,11 @@ import org.springframework.batch.item.excel.support.rowset.DefaultRowSetFactory;
 import org.springframework.batch.item.excel.support.rowset.RowSet;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
+
+import java.io.File;
 
 @Component
 public class DataPendudukExcelItemReader {
@@ -19,7 +23,13 @@ public class DataPendudukExcelItemReader {
     public PoiItemReader<Penduduk> itemReader(
             @Value("#{jobParameters['sourceExcelPath']}") String fileName) throws Exception {
         PoiItemReader reader = new PoiItemReader();
-        reader.setResource(new ClassPathResource("/data/penduduk.xlsx"));
+        File file = new File(fileName);
+        byte[] resource = null;
+        if (file.exists()) {
+            resource = FileUtils.readFileToByteArray(file);
+        }
+
+        reader.setResource(new ByteArrayResource(resource));
         reader.setLinesToSkip(1);
         reader.setRowMapper(new PendudukExcelRowMapper());
         reader.setRowSetFactory(new DefaultRowSetFactory());
