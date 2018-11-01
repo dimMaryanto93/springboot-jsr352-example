@@ -1,4 +1,4 @@
-package com.maryato.dimas.example.config.items;
+package com.maryato.dimas.example.batch.chunk;
 
 import com.maryato.dimas.example.models.Penduduk;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
