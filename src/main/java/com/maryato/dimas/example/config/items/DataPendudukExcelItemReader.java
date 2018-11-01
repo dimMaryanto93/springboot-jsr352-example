@@ -17,9 +17,9 @@ public class DataPendudukExcelItemReader {
     @Bean(name = "dataExcelItemReader")
     @StepScope
     public PoiItemReader<Penduduk> itemReader(
-            @Value("#{jobParameters['sourceXlsxResources']}") String fileName) throws Exception {
+            @Value("#{jobParameters['sourceExcelPath']}") String fileName) throws Exception {
         PoiItemReader reader = new PoiItemReader();
-        reader.setResource(new ClassPathResource(fileName));
+        reader.setResource(new ClassPathResource("/data/penduduk.xlsx"));
         reader.setLinesToSkip(1);
         reader.setRowMapper(new PendudukExcelRowMapper());
         reader.setRowSetFactory(new DefaultRowSetFactory());

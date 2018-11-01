@@ -3,7 +3,7 @@ services:
   db_engine:
     image: postgres:10.4
     ports:
-      - "5432:5432"
+      - "5431:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
     environment:
@@ -11,8 +11,8 @@ services:
   mq_massage:
     image: rmohr/activemq
     ports:
-      - 61616:61616
-      - 8161:8161
+      - 61615:61616
+      - 8162:8161
     volumes:
       - mq_data:/opt/activemq/data
 volumes:
