@@ -14,7 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 @Component
-public class DataPendudukItemReader {
+public class DataPendudukJdbcItemReader {
 
     @Bean
     public JdbcCursorItemReader<Penduduk> jdbcReader(
