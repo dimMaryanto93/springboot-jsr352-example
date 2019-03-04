@@ -10,6 +10,7 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
+import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.excel.poi.PoiItemReader;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.jms.JmsItemReader;
@@ -29,6 +30,30 @@ public class BatchChunkOriented {
     public JobBuilderFactory jobBuilderFactory;
     @Autowired
     public StepBuilderFactory stepBuilderFactory;
+
+    @Bean(name = "stepJdbcToExcel")
+    public Step jdbcToExelStep(
+           @Qualifier("jdbcReader") JdbcCursorItemReader<Penduduk> reader,
+            TransformProcessor processor,
+            DataPendudukExcelItemWriter writer){
+        return stepBuilderFactory.get("jdbcToExcelStep")
+                .<Penduduk, Penduduk>chunk(10)
+                .reader(reader)
+                .processor(processor)
+                .writer(writer)
+                .build();
+    }
+
+    @Bean(name = "jobJdbcToExcel")
+    public Job jdbcToExcelJob(
+            @Qualifier("stepJdbcToExcel") Step job){
+        return jobBuilderFactory.get("jdbcToExcelJob")
+                .incrementer(new RunIdIncrementer())
+                .preventRestart()
+                .flow(job)
+                .end()
+                .build();
+    }
 
 
     @Bean(name = "stepExcelToExcel")

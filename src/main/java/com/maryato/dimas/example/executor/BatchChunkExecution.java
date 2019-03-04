@@ -1,6 +1,7 @@
 package com.maryato.dimas.example.executor;
 
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,12 +27,17 @@ public class BatchChunkExecution implements CommandLineRunner {
     @Qualifier("jmsToJdbcJob")
     private Job jmsToJdbcJob;
 
+    @Autowired
+    @Qualifier("jobJdbcToExcel")
+    private Job jdbcToExcelJob;
+
     @Override
     public void run(String... strings) throws Exception {
-//        JobParametersBuilder excelToExcelJobParams = new JobParametersBuilder();
+        JobParametersBuilder excelToExcelJobParams = new JobParametersBuilder();
+        excelToExcelJobParams.addString("nik", "231432423");
 //        excelToExcelJobParams.addString("sourceXlsxResources", "/data/penduduk.xlsx");
 //        excelToExcelJobParams.addLong("time", System.currentTimeMillis());
-//        jobLauncher.run(excelToExcelJob, excelToExcelJobParams.toJobParameters());
+        jobLauncher.run(jdbcToExcelJob, excelToExcelJobParams.toJobParameters());
 //
 //        JobParametersBuilder csvToExcelJobParams = new JobParametersBuilder();
 //        csvToExcelJobParams.addLong("time", System.currentTimeMillis());
